@@ -128,6 +128,8 @@ public:
 		}
 	}
 
+	
+
 	void show()//打印
 	{
 		Node* p = head->Next;
@@ -142,6 +144,7 @@ public:
 	friend void Reservelink(clink& link);
 	friend bool GetLastNode(clink& link, int k, int& val);
 	friend void MergeLink(clink& link1, clink& link2);
+	//friend bool IsLinkHasCircle(clink& link, int& val);
 
 
 private:
@@ -216,8 +219,157 @@ void MergeLink(clink& link1, clink& link2)//有序单链表合并
 
 }
 
+bool IsLinkHasCircle(Node& head,int &val)//判断单链表是否成环（龟兔赛跑算法/Floyd判圈算法）
+{
+	Node* fast = head.Next;
+	Node* p = head.Next;
+	Node* slow = &head;
+	while (fast != slow)
+	{
+		if (fast == nullptr)
+			return false;
+
+		fast = p->Next;
+		p = fast->Next;
+
+		slow = slow->Next;
+	}
+	p = fast;
+	Node* q = &head;
+	while (p != q)
+	{
+		p = p->Next;
+		q = q->Next;
+	}
+	val = p->Data;
+	return true;
+
+
+}
+
+bool IsLinkHasMerge(Node& head1,Node &head2,int &val)//判断两个链表是否相交
+{
+	Node* p = &head1;
+	int num1=0;
+	int num2=0;
+	Node* q = &head2;
+	while (p != nullptr)
+	{
+		num1++;
+		p = p->Next;
+	}
+	while (q != nullptr)
+	{
+		num2++;
+		q = q->Next;
+	}
+	int v = num1 - num2;
+	if (v >= 0)
+	{
+		p = &head1;
+		q = &head2;
+		for (size_t i = 0; i < v; i++)
+		{
+			p = p->Next;
+		}
+		while (p != q)
+		{
+			p = p->Next;
+			q = q->Next;
+
+		}
+		if (p != nullptr && q != nullptr)
+		{
+			val = p->Data;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
+	if (v <= 0)
+	{
+		p = &head1;
+		q = &head2;
+		for (size_t i = 0; i < v; i++)
+		{
+			q = q->Next;
+		}
+		while (p != q)
+		{
+			p = p->Next;
+			q = q->Next;
+
+		}
+		if (p != nullptr && q != nullptr)
+		{
+			val = p->Data;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+}
+
 int main()
 {
+	Node head1;
+	Node head2;
+	Node n11(25);
+	head1.Next = &n11;
+	Node n12(67);
+	n11.Next = &n12;
+	Node n13(32);
+	n12.Next = &n13;
+	Node n14(18);
+	n13.Next = &n14;
+	n14.Next = nullptr;
+	Node n21(31);
+	head2.Next = &n21;
+	n21.Next = &n13;
+	int kval;
+	cout << IsLinkHasMerge(head1, head2, kval) << endl;
+	cout << kval << endl;
+}
+
+
+
+//int main()
+//{
+//	Node head;
+//	Node n1(10);
+//	head.Next = &n1;
+//
+//	Node n2(18);
+//	n1.Next = &n2;
+//
+//	Node n3(20);
+//	n2.Next = &n3;
+//
+//	Node n4 = (25);
+//	n3.Next = &n4;
+//
+//	Node n5 = (30);
+//	n4.Next = &n5;
+//
+//	Node n6 = (33);
+//	n5.Next = &n6;
+//	n6.Next = &n3;
+//	
+//	
+//
+//
+//	int kval;
+//	
+//	
+//	
+//	cout << IsLinkHasCircle(head, kval)<<endl;
+//	cout << kval << endl;
 	//int kval;
 	/*srand(time(0));
 		clink c;
@@ -227,7 +379,7 @@ int main()
 			c.InsertTail(val);
 
 		}*/
-	clink c1;
+	/*clink c1;
 	int arr1[] = { 2,4,6,8,10 };
 	int arr2[] = { 1,3,5,7,9 };
 	for (int v : arr1)
@@ -243,13 +395,13 @@ int main()
 	}
 	c2.show();
 	MergeLink(c1, c2);
-	c1.show();
+	c1.show();*/
 
 	/*Reservelink(c);
 	c.show();
 	cout<<GetLastNode(c,0,kval)<<endl;
 	cout << kval << endl;*/
-}
+//}
 
 //int main()
 //{
