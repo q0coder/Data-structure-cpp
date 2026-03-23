@@ -364,10 +364,56 @@ public:
 	}
 
 	//判断一颗小树是否是大树的子树
-	bool isChildtree()
+	bool isChildtree(BSTtree<T, Compare>& bst)
 	{
+		if (bst.root == nullptr)
+			return true;
+		Node* cur = root;
+		while (cur != nullptr)
+		{
+			if (cur->m_data == bst.root->m_data)
+			{
+				break;
+			}
+			else if (comp(cur->m_data, bst.root->m_data))
+			{
+				cur = cur->right;
 
+			}
+			else
+			{
+				cur = cur->left;
+			}
+		}
+		if (cur == nullptr)
+			return false;
+		return isChildtree(cur, bst.root);
 	}
+
+	//BST最近公共祖先节点问题（LCA）
+	int getLCA(int val1, int val2)
+	{
+		Node* node = getLCA(root, val1, val2);
+		if (node == nullptr)
+			throw" NO LCA";
+		else
+		{
+			return node->m_data;
+		}
+	}
+
+	//二叉树镜像翻转问题
+	void mirror()
+	{
+		mirror(root);
+	}
+
+	//二叉树镜像对称问题
+	bool mirror02()
+	{
+		return mirror02(root->left, root->right);
+	}
+
 
 private:
 
@@ -592,7 +638,81 @@ private:
 			}
 		}
 		node2 = node;
-		isBSTtree(node->right,node2);
+		isBSTtree(node->right, node2);
+	}
+
+	bool isChildtree(Node* node, Node* child)
+	{
+
+
+		if (node == nullptr && child == nullptr)
+			return true;
+		if (node == nullptr)
+			return false;
+		if (child == nullptr)
+			return true;
+		if (node->m_data != child->m_data)
+		{
+			return false;
+		}
+
+		return isChildtree(node->left, child->left) && isChildtree(node->right, child->right);
+
+
+
+
+
+	}
+
+	Node* getLCA(Node* node, int val1, int val2)
+	{
+		if (node == nullptr)
+			return nullptr;
+
+
+
+		if (node->m_data < val1 && node->m_data < val2)
+		{
+			return getLCA(node = node->right, val1, val2);
+		}
+		else if (node->m_data > val1 && node->m_data > val2)
+		{
+			return getLCA(node = node->left, val1, val2);
+		}
+		else
+		{
+			return node;
+		}
+
+
+	}
+
+	void mirror(Node* node)
+	{
+		if (node == nullptr)
+			return;
+		
+				Node* p=nullptr;
+				p = node->left;
+				node->left = node->right;
+				node->right = p;
+				mirror(node->left);
+				mirror(node->right);
+			
+		
+	}
+
+	bool mirror02(Node* left, Node* right)
+	{
+		if (left == nullptr && right == nullptr)
+			return true;
+		if (left == nullptr || right == nullptr)
+			return false;
+		if (left->m_data != right->m_data)
+			return false;
+		return mirror02(left->left, right->right)&&mirror02(left->right,right->left);
+		
+
 	}
 
 
@@ -603,30 +723,46 @@ private:
 int main()
 {
 	int arr[] = { 58,24,67,0,34,62,69,5,41,64,78 };
-	BSTtree<int>bst;
+	BSTtree<int>bst1;
 	for (int v : arr)
 	{
-		bst.insert(v);
+		bst1.insert(v);
 	}
+	/*using Node = BSTtree<int>::Node;
+	BSTtree<int>bst2;
+	bst2.root = new Node(67);
+	Node* node1 = new Node(62);
+	Node* node2 = new Node(69);
+	Node* node3 = new Node(30);
+	bst2.root->left = node1;
+	bst2.root->right = node2;
+	node1->left = node3;
+	*/
 
-	bst.insert(12);
+	/*bst.insert(12);
 	cout << bst.find(12) << endl;
 	bst.remove(12);
 	cout << bst.find(12) << endl;
 	bst.n_preOrder();
-	cout << endl;
-	bst.n_inOrder();
-	cout << endl;
-	bst.n_postOrder();
+	cout << endl;*/
+	/*bst1.n_inOrder();
+	cout << endl;*/
+	/*bst.n_postOrder();
 	cout << endl;
 	bst.n_levelOrder();
-	bst.insert(12);
+	bst.insert(12);*/
 	/*vector<int>vec;
 	bst.findValues(vec, 10, 50);
 	for (size_t i = 0; i < vec.size(); i++)
 	{
 		cout << vec.at(i) << " ";
 	}*/
-	cout<<bst.isBSTtree();
+	//cout<<bst.isBSTtree();
+	//cout << bst1.isChildtree(bst2)<<endl;
+	//cout << bst1.getLCA(13, 34) << endl;
+	/*bst1.mirror();
+	bst1.inOrder();
+	cout << endl;*/
+	//cout << bst1.mirror02() << endl;
 	return 0;
 }
