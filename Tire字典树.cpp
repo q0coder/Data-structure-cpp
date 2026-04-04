@@ -2,6 +2,7 @@
 #include<vector>
 #include<string>
 #include<map>
+#include<queue>
 using namespace std;
 
 class TireTree
@@ -12,12 +13,37 @@ public:
 		root = new TireNode('\0', 0);
 	}
 
+	~TireTree()
+	{
+		queue<TireNode*>que;
+		que.push(root);
+		while (!que.empty())
+		{
+			auto p = que.front();
+			que.pop();
+
+			for (auto& pair : p->mp)
+			{
+				que.push(pair.second);
+
+			}
+			delete p;
+
+
+		}
+	}
 public:
 
 	//添加操作
 	void add(const string& str)
 	{
 		add(root, str);
+	}
+
+	//输出操作
+	void remove(const string& str)
+	{
+		remove(root, str);
 	}
 
 	//查询操作
@@ -146,6 +172,55 @@ private:
 		 }
 		 Preorder(p, prefix.substr(0, prefix.length() - 1), str);
 	 }
+	 void remove(TireNode* node, const string& str)
+	 {
+		 TireNode* p = node;
+		 TireNode* del = node;
+		 char delch=str[0];
+
+		 for (size_t i = 0; i < str.length(); i++)
+		 {
+			 auto childit = p->mp.find(str[i]);
+			 if (childit == p->mp.end())
+			 {
+				 return;
+			 }
+			 if (p->m_freq > 0 || p->mp.size() > 1)
+			 {
+				 del = p;
+				 delch = str[i];
+			 }
+			 p = childit->second;
+		 }
+
+		 if (p->mp.empty())
+		 {
+			 queue<TireNode*>que;
+			 auto child = del->mp[delch];
+			 del->mp.erase(delch);
+
+			 que.push(child);
+			 while (!que.empty())
+			 {
+				 auto pn = que.front();
+				 que.pop();
+
+				 for (auto& pair : pn->mp)
+				 {
+					 que.push(pair.second);
+
+				 }
+				
+				 delete pn;
+
+
+			 }
+		 }
+		 else
+		 {
+			 p->m_freq = 0;
+		 }
+	 }
 };
 
 
@@ -156,6 +231,8 @@ int main()
 	cout << Tr.query("Hello") << endl;
 	Tr.Preorder();
 	Tr.queryPrefix("He");
+	Tr.remove("Hello");
+	cout << Tr.query("Hello") << endl;
 
 	return 0;
 }
