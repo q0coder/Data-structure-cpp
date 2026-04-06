@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<unordered_map>
+#include<map>
 #include<queue>
 using namespace std;
 using   uint = unsigned int;
@@ -16,7 +17,7 @@ public:
 	//´´½¨¹þ·òÂüÊ÷
 	void create(string str)
 	{
-		unordered_map<char, uint>dataMap;
+		map<char, uint>dataMap;
 
 		for (char s : str)
 		{
@@ -46,6 +47,51 @@ public:
 	}
 
 
+	
+
+	//»ñÈ¡×Ö·û´®±àÂë
+	string showhuffMancode(string str)
+	{
+		string encode;
+		if (root == nullptr)
+		{
+			throw "the tree is empty";
+		}
+		huffMancode();
+		
+		for (auto s : str)
+		{
+			 encode.append(mp[s]);
+		}
+		return encode;
+	}
+
+	//½âÂë
+	void delcode( string encode)
+	{
+		Node* node = root;
+
+		for (char c : encode)
+		{
+			if (c == '0')
+			{
+				node=node->left;
+			}
+			else
+			{
+				node=node->right;
+			}
+			if (node->left == nullptr && node->right == nullptr)
+			{
+				cout << node->m_data;
+				node = root;
+			}
+		}
+		cout << endl;
+
+	}
+
+private:
 	//Êä³ö¹þ·òÂü±àÂë
 	void huffMancode()
 	{
@@ -56,15 +102,12 @@ public:
 
 		string code;
 		huffMancode(root, code);
-		for (auto pair : mp)
+		/*for (auto pair : mp)
 		{
 			cout << pair.first << ": " << pair.second << endl;
-		}
+		}*/
 
 	}
-
-
-private:
 	struct Node
 	{
 		Node(char data, uint w)
@@ -87,7 +130,7 @@ private:
 
 
 	Node* root;
-	unordered_map<char, string>mp;
+	map<char, string>mp;
 	using minHeap = priority_queue < Node*, vector<Node*>, greater<Node*> >;
 	minHeap p_que;
 
@@ -114,5 +157,7 @@ int main()
 {
 	HuffmanTree ht;
 	ht.create("ABACDAEFDEG");
-	ht.huffMancode();
+	string enlcode = ht.showhuffMancode("ABACDAEFDEG");
+	cout<< enlcode <<endl;
+	ht.delcode(enlcode);
 }
